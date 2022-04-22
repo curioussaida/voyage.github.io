@@ -1,164 +1,55 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
-  <head>
-    <style type="text/css" media="screen">
-      @import "//sailthru.com/css/link.css";
+<!DOCTYPE html>
+<html data-require="math graphie graphie-helpers">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Finding absolute values</title>
+    <script data-main="../local-only/main.js" src="../local-only/require.js"></script>
+</head>
+<body>
+    <div class="exercise">
+    <div class="vars" data-ensure='SIGN === "" || INT !== 0 || FRAC !== ""'>
+        <var id="INT">rand(5) &gt; 0 ? randRange( 1, 9 ) : 0</var>
+        <var id="FRAC">rand(3) &gt; 0 ? "." + randRange(1, 9) : ""</var>
+        <var id="SIGN">randFromArray(["", "-"])</var>
+        <var id="NUMBER">Number(SIGN + INT + FRAC)</var>
+        <var id="ABSOLUTE_NUMBER">abs(NUMBER)</var>
+    </div>
 
-      body {
-        margin: 0;
-        font-family:'Helvetica Neue',Calibri,Helvetica,Arial,sans-serif;
-      }
-
-      #header {
-        background: #2c3747;
-        -webkit-box-shadow: 0 2px 3px rgba(0,0,0,0.3);
-        -moz-box-shadow: 0 2px 3px rgba(0,0,0,0.3);
-        box-shadow: 0 2px 3px rgba(0,0,0,0.3);
-        position: relative;
-        z-index: 1030;
-        text-align: center;
-        padding:9px;
-      }
-
-      #content {
-        width: 600px;
-        margin:0 auto;
-      }
-
-      h1, h2, h3, h4 {
-        color: black;
-        background: white;
-        border: none;
-        margin-left: 0;
-      }
-
-      h1 {
-        margin-top: 15px;
-      }
-
-      p {
-        margin-left: 6px;
-      }
-
-      .message input {
-        height:auto;
-      }
-
-      .message {
-        margin-bottom: 30px;
-      }
-
-      .message.your-email {
-        margin-bottom: 0;
-      }
-
-      .message.debug {
-        display: none;
-      }
-
-      .simple-button {
-        font-family:'Helvetica Neue',Calibri,Helvetica,Arial,sans-serif;
-        border:1px solid #76a015;
-        background-color:#7fac05;
-        color:white;display:inline-block;
-        padding:0 32px;
-        margin:0;
-        border-radius:5px;
-        font-size:16px;
-        line-height:40px;
-        text-decoration:none;
-        vertical-align:center;
-        cursor:pointer;
-      }
-    </style>
-    <title>Email Preferences | Khan Academy</title>
-  </head>
-  <body>
-    <div id="wrapper">
-      <div id="header" class="invite">
-        <a href="https://www.khanacademy.org">
-        <img src="https://khan-academy.appspot.com/images/ka-simplified-logo-white.png">
-        </a>
-      </div>
-      <div id="content">
-        <h1 class="title">Unsubscribe</h1>
-        <div class="message your-email">
-          <p><b>Your email:</b> {profile.email}</p>
+    <div class="problems">
+        <div>
+            <div class="question">
+                <p>What is <code>\lvert <var>commafy(NUMBER)</var> \rvert</code>?</p>
+            </div>
+            <div class="solution"><var>ABSOLUTE_NUMBER</var></div>
         </div>
+    </div>
 
-        <!-- Only used for debugging! -->
-        <div class="message debug">
-          <p>profile.optout: "{profile.optout}"</p>
-          <p>template: "{template}"</p>
-          <form action="" method="post">
-            <input type="hidden" name="template" value="{template}">
-            <input class="simple-button submit-button" name="action"
-                   value="Subscribe" type="submit" />
-          </form>
+    <div class="hints">
+        <div class="graphie">
+            init({
+                range: [ [-1, 11], [-1, 1] ]
+            });
+            var start = 0;
+            var end = 10;
+            var originX = 0;
+            var x = ABSOLUTE_NUMBER;
+            if ( SIGN === "-" ) {
+                start = -10;
+                end = 0;
+                originX = 10;
+                x = 10 - x;
+            }
+            numberLine( start, end );
+            style({ stroke: BLUE, fill: BLUE });
+            graph.pt = circle( [ x, 0 ], 0.15 );
+            style({ stroke: ORANGE, fill: ORANGE, strokeWidth: 3.5, arrows: "-&gt;" });
+            path( [ [ originX, 0 ], [ x, 0 ] ] );
+            circle( [ originX, 0 ], 0.10 );
+            graph.pt.toFront();
         </div>
-
-        {if !profile.optout}
-
-        <div class="message optout">
-          {if !contains(profile.lists, "Teacher Updates Suppression")}
-            <p>
-              You are subscribed to Teacher Updates.
-            </p>
-            <form action="" method="post">
-              <input type="hidden" name="lists[Teacher Updates Suppression]" value="1"/>
-              <input class="simple-button submit-button" name="action"
-                     value="Unsubscribe From Teacher Updates" type="submit" />
-            </form>
-          {else}
-            <p>
-              You are not subscribed to Teacher Updates.
-            </p>
-            <form action="" method="post">
-              <input type="hidden" name="lists[Teacher Updates Suppression]" value="0"/>
-              <input class="simple-button submit-button" name="action"
-                     value="Subscribe To Teacher Updates" type="submit" />
-            </form>
-          {/if}
-        </div>
-
-        {/if}
-
-        <!-- Unsubscribe from all emails! -->
-        <div class="message optout-all">
-          <p>
-            From time to time Khan Academy sends email to let you know
-            about things we think you're interested in. We'll always include
-            a link to unsubscribe from email of this type in the email
-            itself.
-          </p>
-
-          {if !profile.optout}
-            <p>
-              If, however, you'd rather not receive <strong>any</strong>
-              marketing email from Khan Academy, please click on the button
-              below. Note that you will still receive critical emails such as
-              forgotten password requests.
-            </p>
-            <form action="" method="post">
-              <input type="hidden" name =".optout_all" value="1" />
-              <input class="simple-button submit-button" name="action"
-                     value="Unsubscribe From All Email" type="submit" />
-            </form>
-          {else}
-            <p>
-              You have elected to not receive this email. Note that you
-              will still receive critical email like password resets.
-            </p>
-            <p>
-              If you would prefer to start receiving email again, please press
-             the button below.
-            </p>
-            <form action="" method="post">
-              <input class="simple-button submit-button" name="action"
-                     value="Subscribe" type="submit" />
-            </form>
-          {/if}
-        </div>
-      </div>
-  </body>
+        <p>The distance from <code>0</code> to <code><var>commafy(NUMBER)</var></code> is <code><var>commafy(ABSOLUTE_NUMBER)</var></code>, which equals the absolute value.</p>
+        <p data-if='SIGN !== ""'>In other words, <code><var>commafy(ABSOLUTE_NUMBER)</var></code> is the non-negative version of <code><var>commafy(NUMBER)</var></code>.</p>
+    </div>
+    </div>
+</body>
 </html>
